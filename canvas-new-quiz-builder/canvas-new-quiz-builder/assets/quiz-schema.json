@@ -1,0 +1,290 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Canvas New Quiz Builder specification",
+  "type": "object",
+  "required": ["title", "items"],
+  "additionalProperties": false,
+  "properties": {
+    "title": {"type": "string", "minLength": 1},
+    "description": {"type": "string"},
+    "settings": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "allowed_attempts": {"type": "integer", "minimum": 1},
+        "shuffle_answers": {"type": "boolean"},
+        "show_correct_answers": {"type": "boolean"}
+      }
+    },
+    "items": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "oneOf": [
+          {"$ref": "#/$defs/multiple_choice"},
+          {"$ref": "#/$defs/multiple_answer"},
+          {"$ref": "#/$defs/dropdown"},
+          {"$ref": "#/$defs/ordering"},
+          {"$ref": "#/$defs/matching"},
+          {"$ref": "#/$defs/categorization"},
+          {"$ref": "#/$defs/essay"},
+          {"$ref": "#/$defs/file_upload"},
+          {"$ref": "#/$defs/stimulus"}
+        ]
+      }
+    }
+  },
+  "$defs": {
+    "id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]*$"},
+    "role": {
+      "enum": ["conceptual", "application", "analysis", "evaluation", "transfer", "misconception", "source_check", "recall_support", "process_evidence", "verification", "reflection", "artifact"]
+    },
+    "dependency": {"enum": ["generic", "source_dependent", "activity_dependent", "both"]},
+    "scoring": {"enum": ["partial", "all_or_nothing"]},
+    "choice": {
+      "type": "object",
+      "required": ["id", "text", "correct"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "text": {"type": "string", "minLength": 1},
+        "correct": {"type": "boolean"}
+      }
+    },
+    "scored_properties": {
+      "id": {"$ref": "#/$defs/id"},
+      "title": {"type": "string", "minLength": 1},
+      "points": {"type": "number", "exclusiveMinimum": 0},
+      "prompt_html": {"type": "string", "minLength": 1},
+      "source_locator": {"type": "string", "minLength": 1},
+      "assessment_role": {"$ref": "#/$defs/role"},
+      "source_dependency": {"$ref": "#/$defs/dependency"},
+      "parent_stimulus_id": {"$ref": "#/$defs/id"}
+    },
+    "multiple_choice": {
+      "type": "object",
+      "required": ["id", "type", "title", "points", "prompt_html", "source_locator", "assessment_role", "source_dependency", "choices"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "type": {"const": "multiple_choice"},
+        "title": {"type": "string", "minLength": 1},
+        "points": {"type": "number", "exclusiveMinimum": 0},
+        "prompt_html": {"type": "string", "minLength": 1},
+        "source_locator": {"type": "string", "minLength": 1},
+        "assessment_role": {"$ref": "#/$defs/role"},
+        "source_dependency": {"$ref": "#/$defs/dependency"},
+        "parent_stimulus_id": {"$ref": "#/$defs/id"},
+        "choices": {"type": "array", "minItems": 2, "items": {"$ref": "#/$defs/choice"}}
+      }
+    },
+    "multiple_answer": {
+      "type": "object",
+      "required": ["id", "type", "title", "points", "prompt_html", "source_locator", "assessment_role", "source_dependency", "choices", "scoring"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "type": {"const": "multiple_answer"},
+        "title": {"type": "string", "minLength": 1},
+        "points": {"type": "number", "exclusiveMinimum": 0},
+        "prompt_html": {"type": "string", "minLength": 1},
+        "source_locator": {"type": "string", "minLength": 1},
+        "assessment_role": {"$ref": "#/$defs/role"},
+        "source_dependency": {"$ref": "#/$defs/dependency"},
+        "parent_stimulus_id": {"$ref": "#/$defs/id"},
+        "choices": {"type": "array", "minItems": 2, "items": {"$ref": "#/$defs/choice"}},
+        "scoring": {"$ref": "#/$defs/scoring"}
+      }
+    },
+    "dropdown": {
+      "type": "object",
+      "required": ["id", "type", "title", "points", "prompt_html", "source_locator", "assessment_role", "source_dependency", "blanks"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "type": {"const": "dropdown"},
+        "title": {"type": "string", "minLength": 1},
+        "points": {"type": "number", "exclusiveMinimum": 0},
+        "prompt_html": {"type": "string", "minLength": 1},
+        "source_locator": {"type": "string", "minLength": 1},
+        "assessment_role": {"$ref": "#/$defs/role"},
+        "source_dependency": {"$ref": "#/$defs/dependency"},
+        "parent_stimulus_id": {"$ref": "#/$defs/id"},
+        "blanks": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["id", "answer", "options"],
+            "additionalProperties": false,
+            "properties": {
+              "id": {"$ref": "#/$defs/id"},
+              "answer": {"type": "string", "minLength": 1},
+              "options": {"type": "array", "minItems": 2, "maxItems": 8, "items": {"type": "string", "minLength": 1}}
+            }
+          }
+        }
+      }
+    },
+    "ordering": {
+      "type": "object",
+      "required": ["id", "type", "title", "points", "prompt_html", "source_locator", "assessment_role", "source_dependency", "ordered_items"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "type": {"const": "ordering"},
+        "title": {"type": "string", "minLength": 1},
+        "points": {"type": "number", "exclusiveMinimum": 0},
+        "prompt_html": {"type": "string", "minLength": 1},
+        "source_locator": {"type": "string", "minLength": 1},
+        "assessment_role": {"$ref": "#/$defs/role"},
+        "source_dependency": {"$ref": "#/$defs/dependency"},
+        "parent_stimulus_id": {"$ref": "#/$defs/id"},
+        "ordered_items": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "object",
+            "required": ["id", "text"],
+            "additionalProperties": false,
+            "properties": {
+              "id": {"$ref": "#/$defs/id"},
+              "text": {"type": "string", "minLength": 1}
+            }
+          }
+        }
+      }
+    },
+    "matching": {
+      "type": "object",
+      "required": ["id", "type", "title", "points", "prompt_html", "source_locator", "assessment_role", "source_dependency", "pairs"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "type": {"const": "matching"},
+        "title": {"type": "string", "minLength": 1},
+        "points": {"type": "number", "exclusiveMinimum": 0},
+        "prompt_html": {"type": "string", "minLength": 1},
+        "source_locator": {"type": "string", "minLength": 1},
+        "assessment_role": {"$ref": "#/$defs/role"},
+        "source_dependency": {"$ref": "#/$defs/dependency"},
+        "parent_stimulus_id": {"$ref": "#/$defs/id"},
+        "pairs": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "object",
+            "required": ["id", "prompt", "answer"],
+            "additionalProperties": false,
+            "properties": {
+              "id": {"$ref": "#/$defs/id"},
+              "prompt": {"type": "string", "minLength": 1},
+              "answer": {"type": "string", "minLength": 1}
+            }
+          }
+        },
+        "distractors": {"type": "array", "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "categorization": {
+      "type": "object",
+      "required": ["id", "type", "title", "points", "prompt_html", "source_locator", "assessment_role", "source_dependency", "categories", "options", "scoring"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "type": {"const": "categorization"},
+        "title": {"type": "string", "minLength": 1},
+        "points": {"type": "number", "exclusiveMinimum": 0},
+        "prompt_html": {"type": "string", "minLength": 1},
+        "source_locator": {"type": "string", "minLength": 1},
+        "assessment_role": {"$ref": "#/$defs/role"},
+        "source_dependency": {"$ref": "#/$defs/dependency"},
+        "parent_stimulus_id": {"$ref": "#/$defs/id"},
+        "categories": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "object",
+            "required": ["id", "text"],
+            "additionalProperties": false,
+            "properties": {
+              "id": {"$ref": "#/$defs/id"},
+              "text": {"type": "string", "minLength": 1}
+            }
+          }
+        },
+        "options": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "object",
+            "required": ["id", "text", "category_id"],
+            "additionalProperties": false,
+            "properties": {
+              "id": {"$ref": "#/$defs/id"},
+              "text": {"type": "string", "minLength": 1},
+              "category_id": {"oneOf": [{"$ref": "#/$defs/id"}, {"type": "null"}]}
+            }
+          }
+        },
+        "scoring": {"$ref": "#/$defs/scoring"}
+      }
+    },
+    "essay": {
+      "type": "object",
+      "required": ["id", "type", "title", "points", "prompt_html", "source_locator", "assessment_role", "source_dependency"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "type": {"const": "essay"},
+        "title": {"type": "string", "minLength": 1},
+        "points": {"type": "number", "exclusiveMinimum": 0},
+        "prompt_html": {"type": "string", "minLength": 1},
+        "source_locator": {"type": "string", "minLength": 1},
+        "assessment_role": {"$ref": "#/$defs/role"},
+        "source_dependency": {"$ref": "#/$defs/dependency"},
+        "parent_stimulus_id": {"$ref": "#/$defs/id"}
+      }
+    },
+    "file_upload": {
+      "type": "object",
+      "required": ["id", "type", "title", "points", "prompt_html", "source_locator", "assessment_role", "source_dependency"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "type": {"const": "file_upload"},
+        "title": {"type": "string", "minLength": 1},
+        "points": {"type": "number", "exclusiveMinimum": 0},
+        "prompt_html": {"type": "string", "minLength": 1},
+        "source_locator": {"type": "string", "minLength": 1},
+        "assessment_role": {"$ref": "#/$defs/role"},
+        "source_dependency": {"$ref": "#/$defs/dependency"},
+        "parent_stimulus_id": {"$ref": "#/$defs/id"}
+      }
+    },
+    "stimulus": {
+      "type": "object",
+      "required": ["id", "type", "title"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "type": {"const": "stimulus"},
+        "title": {"type": "string", "minLength": 1},
+        "content_html": {"type": "string"},
+        "source_locator": {"type": "string"},
+        "media": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["path", "alt"],
+            "additionalProperties": false,
+            "properties": {
+              "path": {"type": "string", "minLength": 1},
+              "alt": {"type": "string", "minLength": 1}
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,15 @@
+interface:
+  display_name: Canvas New Quiz Builder
+  short_description: Build higher-order Canvas quizzes from course material
+  default_prompt: Use $canvas-new-quiz-builder to turn my educational materials into
+    a higher-order Canvas New Quiz with automatic grading wherever defensible and
+    generate the QTI package.
+  icon_small: assets/icon.svg
+  icon_large: assets/icon.svg
+policy:
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas
+  allow_implicit_invocation: true
