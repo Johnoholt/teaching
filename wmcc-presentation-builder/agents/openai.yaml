@@ -1,0 +1,15 @@
+interface:
+  display_name: WMCC Presentation Builder
+  short_description: Build clear, editable WMCC PowerPoint decks
+  default_prompt: Use $wmcc-presentation-builder to turn my source material into an
+    editable WMCC PowerPoint presentation.
+  brand_color: '#004833'
+  icon_small: assets/icon.svg
+  icon_large: assets/icon.svg
+policy:
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas
+  allow_implicit_invocation: true

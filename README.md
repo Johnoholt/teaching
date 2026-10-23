@@ -9,3 +9,7 @@ My repository for developing teaching materials.  Enjoy.
 - Feed the AI the material for the quiz and call the skill to build a QTI.zip.
 - Choose 'Import Existing Content' in Canvas, choose QTI.zip and be sure to select New Quiz when importing.
 
+## WMCC Presentation Builder
+- Creates editable PowerPoint presentations for college students and technical audiences using the bundled WMCC template.
+- Includes the skill instructions, design guide, PowerPoint template, and WMCC logos in [wmcc-presentation-builder](wmcc-presentation-builder/).
+- Uses substantive teaching bullets, short presenter notes, compact source references, and visual validation. Requires the built-in Presentations skill for authoring, rendering, and validation.
